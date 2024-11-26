@@ -1,0 +1,16 @@
+        <h3>Report Recent Spendings and Earnings</h3>
+        <form action="http://localhost:3000/report" method="get">
+            <select name = "info">
+                <option value = "0">Select Type of Transaction</option>
+                {{#each previous.types}}
+                    <option value={{info}} {{selected}}>{{info}}</option>
+                {{/each}}
+            </select>
+            {{#if errors.TypeMissing}}<br/><i>Please select a transaction type</i>{{/if}}
+            <br/>
+			<br/>
+            Amount: <input type = "text" name = "amount" value = "{{previous.amount}}"/>
+            {{#if errors.amountIllegal}}<br/><i>Amount must be a number with at least 2 decimal places</i>{{/if}}
+            <br/><br/>
+            <input type = "submit" value = "Report"/>
+        </form>

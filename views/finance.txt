@@ -1,0 +1,6 @@
++3000.00 start-balance
+-200.00 repairs
+-100.00 insurance-payment
+-20.00 gas
++1200 paycheck
+-15.49 subscription
