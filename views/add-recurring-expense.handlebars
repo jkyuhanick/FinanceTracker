@@ -1,0 +1,29 @@
+<form action="/add-recurring-expense" method="POST">
+    <label for="amount">Amount: </label>
+    <input type="number" name="amount" id="amount" required step="0.01" min="0">
+    
+    <label for="category">Category: </label>
+    <select name="category" id="category" required>
+        <!-- Populate categories from the database -->
+        <option value="0">Select Type of Transaction</option>
+        {{#each categories}}
+            <option value="{{id}}" {{#if (eq ../previous.categoryId id)}}selected{{/if}}>{{name}}</option>
+        {{/each}}
+    </select>
+    
+    <label for="frequency">Frequency: </label>
+    <select name="frequency" id="frequency" required>
+        <option value="daily">Daily</option>
+        <option value="weekly">Weekly</option>
+        <option value="monthly">Monthly</option>
+        <option value="yearly">Yearly</option>
+    </select>
+    
+    <label for="start_date">Start Date: </label>
+    <input type="date" name="start_date" id="start_date" required>
+    
+    <label for="description">Description: </label>
+    <textarea name="description" id="description"></textarea>
+    
+    <button type="submit">Add Recurring Expense</button>
+</form>

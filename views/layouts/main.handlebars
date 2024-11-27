@@ -22,9 +22,17 @@
         </div>
         <div class="navigation">
             <ul>
-                <li><a href="home">Home</a></li>
-                <li><a href="reportform">Report Finances</a></li>
-                <li><a href="summary">Summary</a></li>
+                <li><a href="/home">Home</a></li>
+                {{#if isLoggedIn}}
+                    <li><a href="/reportform">Report Finances</a></li>
+                    <li><a href="/add-recurring-expense">Add Recurring Expense</a></li>
+                    <li><a href="/set-budget">Set Budget</a></li>
+                    <li><a href="/summary">Summary</a></li>
+                    <li><a href="/logout">Logout</a></li>
+                {{else}}
+                    <li><a href="/login">Login</a></li>
+                    <li><a href="/register">Sign Up</a></li>
+                {{/if}}
             </ul>
         </div>
     </div>

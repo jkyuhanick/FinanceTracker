@@ -1,30 +1,78 @@
 <h3>Transaction Summary</h3>
 <br/>
-<b>Current Balance:</b> <i>3,864.51</i>
+<b>Current Balance:</b> <i>${{balance}}</i><br/>
+
+<!-- Displaying Budget Information -->
 <br/>
+<b>Budget Limit:</b> <i>${{budgetLimit}}</i><br/>
+<b>Total Spent:</b> <i>${{totalSpent}}</i><br/>
+<b>Remaining Budget:</b> <i>${{remainingBudget}}</i><br/>
+<br/>
+
+<!-- Time Period Filter -->
+<h4>Filter Transactions by Date</h4>
+<form method="GET" action="/summary">
+    <label for="startDate">Start Date:</label>
+    <input type="date" id="startDate" name="startDate" value="{{startDate}}" />
+
+    <label for="endDate">End Date:</label>
+    <input type="date" id="endDate" name="endDate" value="{{endDate}}" />
+
+    <!-- Category Filter -->
+    <label for="category">Select a Category:</label>
+    <select id="category" name="category">
+        <option value="">-- All Categories --</option>
+        {{#each categories}}
+        <option value="{{this}}" {{#if (eq ../selectedCategory this)}}selected{{/if}}>{{this}}</option>
+        {{/each}}
+    </select>
+
+    <button type="submit">Filter</button>
+</form>
+
+<!-- Table Displaying Transactions -->
 <table border="1" class="center" style="margin: 20px auto">
-	<tr style="background-color: lightgreen;">
-		<td>Start Balance</td>
-		<td>+3000.00</td>
-	</tr>
-	<tr style="background-color: lightcoral;">
-		<td>Repairs</td>
-		<td>-200.00</td>
-	</tr>
-	<tr style="background-color: lightcoral;">
-		<td>Insurance Payment</td>
-		<td>-100.00</td>
-	</tr>
-	<tr style="background-color: lightcoral;">
-		<td>Gas</td>
-		<td>-20.00</td>
-	</tr>
-	<tr style="background-color: lightgreen;">
-		<td>Paycheck</td>
-		<td>+1200.00</td>
-	</tr>
-	<tr style="background-color: lightcoral;">
-		<td>Subscription</td>
-		<td>-15.49</td>
-	</tr>
+    <tr style="background-color: lightgreen;">
+        <th>Category</th>
+        <th>Amount</th>
+        <th>Transaction Date</th>
+        <th>Description</th>
+        <th>Delete</th>
+    </tr>
+
+    {{#each transactions}}
+    <tr style="background-color: {{#if (eq type 'income')}}lightgreen{{else}}lightcoral{{/if}};">
+        <td>{{category}}</td>
+        <td>{{#if (eq type 'income')}}+{{amount}}{{else}}-{{amount}}{{/if}}</td>
+        <td>{{transaction_date}}</td>
+        <td>{{description}}</td>
+        <td>
+            <form action="/delete-transaction/{{id}}" method="POST" style="display:inline;">
+                <button type="submit">Delete</button>
+            </form>
+        </td>
+    </tr>
+    {{/each}}
 </table>
+
+<!-- Summary for Selected Filters -->
+{{#if selectedCategory}}
+<h4>Summary for Category: {{selectedCategory}}</h4>
+<p>
+    <b>Total Income:</b> ${{categoryIncome}}<br/>
+    <b>Total Expenses:</b> ${{categoryExpenses}}<br/>
+    <b>Net Total:</b> ${{categoryNet}}<br/>
+</p>
+{{/if}}
+
+{{#if startDate}}
+<h4>Summary for Date Range: {{startDate}} to {{endDate}}</h4>
+<p>
+    <b>Total Income:</b> ${{categoryIncome}}<br/>
+    <b>Total Expenses:</b> ${{categoryExpenses}}<br/>
+    <b>Net Total:</b> ${{categoryNet}}<br/>
+</p>
+{{/if}}
+
+<!-- Button to Export as PDF -->
+<a href="/export-pdf" class="btn btn-primary">Export as PDF</a>

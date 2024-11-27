@@ -64,7 +64,8 @@ function getPrevious(report) {
 
     if (!report) { // If no prior order made, displays defaults
         previous.amount = "";    
-        previous.info = getType();
+        previous.types = getType();
+        previous.info = "0";  // Default value for "Select Type of Transaction"
     }
     else {  // Redisplay existing values 
         previous.amount = report.amountString; // Redisplay original quantity in form

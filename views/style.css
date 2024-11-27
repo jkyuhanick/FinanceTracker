@@ -6,7 +6,7 @@
 
 .top_banner {
     background: url('../images/headimg.png') no-repeat left top;
-    height: 100px;
+    height: 75px;
     padding: 60px 182px 0px 182px;
     border: #6C8286 solid 1px;
     margin-bottom: 10px;
@@ -37,7 +37,7 @@
 /* Navigation Styles */
 .navigation {
     margin-bottom: 5px;
-    padding: 13px 5px;
+    padding: 13px 2px;
     background: #333d3f; 
 	text-align: center;
     justify-content: center;

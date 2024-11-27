@@ -1,0 +1,14 @@
+<h3>Set Your Budget Limit</h3>
+
+{{#if error}}
+    <p style="color: red;">{{error}}</p>
+{{/if}}
+
+<form action="/set-budget" method="POST">
+    <label for="budgetLimit">Enter your budget limit:</label>
+    <input type="number" id="budgetLimit" name="budgetLimit" value="{{budgetLimit}}" step="0.01" required />
+    <button type="submit">Update Budget</button>
+</form>
+
+<p><a href="/summary">Back to Summary</a></p>
+
