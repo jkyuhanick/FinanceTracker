@@ -6,7 +6,7 @@ const mysql = require('mysql2');
 const db = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: 'JKristinaY1871!',
+    password: 'pw',
     database: 'expense_tracker'
 });
 

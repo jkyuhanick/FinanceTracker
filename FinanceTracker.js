@@ -50,66 +50,77 @@ function ensureLoggedIn(req, res, next) {
 // node-cron to enable recurring expenses
 const cron = require('node-cron');
 
-// Cron job to run once per day
-cron.schedule('0 0 * * *', () => {  // Runs at midnight every day
-    const query = `
+// Cron job to run once per day at midnight
+cron.schedule('0 0 * * *', () => {
+    console.log('Cron job started to process recurring expenses');
+
+    const fetchRecurringExpensesQuery = `
         SELECT * FROM recurring_expenses
         WHERE next_due_date <= CURDATE()
     `;
 
-    db.query(query, (err, recurringExpenses) => {
+    db.query(fetchRecurringExpensesQuery, (err, recurringExpenses) => {
         if (err) {
             console.error('Error fetching recurring expenses:', err);
             return;
         }
 
+        if (recurringExpenses.length === 0) {
+            console.log('No recurring expenses due today.');
+            return;
+        }
+
+        console.log(`Processing ${recurringExpenses.length} recurring expenses...`);
+
         recurringExpenses.forEach(expense => {
-            // Create a new transaction for this recurring expense
             const transactionQuery = `
                 INSERT INTO transactions (user_id, category_id, amount, transaction_date, description, type)
-                VALUES (?, ?, ?, ?, ?, ?)
+                VALUES (?, ?, ?, ?, ?, 'expense')
             `;
 
-            // Set the next due date based on the frequency
-            let nextDueDate = new Date(expense.next_due_date);
-            if (expense.frequency === 'daily') {
+            const transactionDate = new Date().toISOString().split('T')[0]; // today's date
+            const { user_id, category_id, amount, description, frequency, id } = expense;
+
+            // Calculate next due date
+            const nextDueDate = new Date(expense.next_due_date);
+            if (frequency === 'daily') {
                 nextDueDate.setDate(nextDueDate.getDate() + 1);
-            } else if (expense.frequency === 'weekly') {
+            } else if (frequency === 'weekly') {
                 nextDueDate.setDate(nextDueDate.getDate() + 7);
-            } else if (expense.frequency === 'monthly') {
+            } else if (frequency === 'monthly') {
                 nextDueDate.setMonth(nextDueDate.getMonth() + 1);
-            } else if (expense.frequency === 'yearly') {
+            } else if (frequency === 'yearly') {
                 nextDueDate.setFullYear(nextDueDate.getFullYear() + 1);
             }
 
-            db.query(transactionQuery, [
-                expense.user_id, 
-                expense.category_id, 
-                expense.amount, 
-                new Date().toISOString().split('T')[0], // today's date for the transaction
-                expense.description,
-                'expense'
-            ], (err, result) => {
+            // Insert the transaction
+            db.query(transactionQuery, [user_id, category_id, amount, transactionDate, description], (err) => {
                 if (err) {
-                    console.error('Error creating transaction:', err);
+                    console.error(`Error creating transaction for recurring expense ID ${id}:`, err);
+                    return;
                 }
 
-                // Update the next_due_date for the recurring expense
-                const updateQuery = `
+                console.log(`Transaction added for recurring expense ID ${id}.`);
+
+                // Update the next due date
+                const updateNextDueDateQuery = `
                     UPDATE recurring_expenses
                     SET next_due_date = ?
                     WHERE id = ?
                 `;
 
-                db.query(updateQuery, [nextDueDate.toISOString().split('T')[0], expense.id], (err, result) => {
+                db.query(updateNextDueDateQuery, [nextDueDate.toISOString().split('T')[0], id], (err) => {
                     if (err) {
-                        console.error('Error updating next due date:', err);
+                        console.error(`Error updating next due date for recurring expense ID ${id}:`, err);
+                    } else {
+                        console.log(`Next due date updated for recurring expense ID ${id}.`);
                     }
                 });
             });
         });
     });
 });
+
 
 
 // Middleware to check login status

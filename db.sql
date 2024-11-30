@@ -62,6 +62,7 @@ CREATE TABLE recurring_expenses (
 insert into categories (name) values ('Savings Total'), ('Checkings Total');
 
 select * from users;
+select * from recurring_expenses;
 select * from transactions;
 delete from users where id = 2;
 SELECT id, name FROM categories;
