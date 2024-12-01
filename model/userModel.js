@@ -4,12 +4,20 @@ const mysql = require('mysql2');
 
 // Database connection setup (replace with your actual credentials)
 const db = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: 'pw',
-    database: 'expense_tracker'
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+    port: process.env.DB_PORT,
+  });
+  
+db.connect((err) => {
+    if (err) {
+      console.error('Database connection failed:', err.stack);
+      return;
+    }
+    console.log('Connected to database.');
 });
-
 // Add a new user
 function addUser(username, email, password, callback) {
     const sql = `INSERT INTO users (username, email, password) VALUES (?, ?, ?)`;

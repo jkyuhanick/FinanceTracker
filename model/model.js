@@ -1,4 +1,3 @@
-// Chris Soplata
 // Finance tracker model: functions
 
 // Get types of spending as an array of objects

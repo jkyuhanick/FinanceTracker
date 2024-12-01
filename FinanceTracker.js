@@ -1,5 +1,5 @@
 // Main
-
+require('dotenv').config({ path: './db.env' });
 var express = require("express");
 const session = require('express-session');
 var http = require("http");
@@ -7,6 +7,8 @@ var path = require("path");
 var exphbs = require('express-handlebars');
 const bcrypt = require('bcrypt');
 const PdfPrinter = require('pdfmake');
+
+
 
 // Construct express object
 var app = express();
@@ -529,7 +531,7 @@ app.get('/export-pdf', ensureLoggedIn, (req, res) => {
                 return [
                     transaction.category,
                     (transaction.type === 'income' ? '+' : '-') + transaction.amount,
-                    formattedDate,  // Ensure the formatted date is passed here
+                    formattedDate, 
                     transaction.description
                 ];
             });
